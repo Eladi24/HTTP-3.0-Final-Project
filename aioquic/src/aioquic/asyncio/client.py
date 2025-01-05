@@ -1,10 +1,11 @@
 import asyncio
+import ipaddress
 import socket
 from contextlib import asynccontextmanager
 from typing import AsyncGenerator, Callable, Optional, cast
 
 from ..quic.configuration import QuicConfiguration
-from ..quic.connection import QuicConnection, QuicTokenHandler
+from ..quic.connection import QuicConnection
 from ..tls import SessionTicketHandler
 from .protocol import QuicConnectionProtocol, QuicStreamHandler
 
@@ -20,7 +21,6 @@ async def connect(
     create_protocol: Optional[Callable] = QuicConnectionProtocol,
     session_ticket_handler: Optional[SessionTicketHandler] = None,
     stream_handler: Optional[QuicStreamHandler] = None,
-    token_handler: Optional[QuicTokenHandler] = None,
     wait_connected: bool = True,
     local_port: int = 0,
 ) -> AsyncGenerator[QuicConnectionProtocol, None]:
@@ -44,15 +44,17 @@ async def connect(
     * ``stream_handler`` is a callback which is invoked whenever a stream is
       created. It must accept two arguments: a :class:`asyncio.StreamReader`
       and a :class:`asyncio.StreamWriter`.
-    * ``wait_connected`` indicates whether the context manager should wait for the
-      connection to be established before yielding the
-      :class:`~aioquic.asyncio.QuicConnectionProtocol`. By default this is `True` but
-      you can set it to `False` if you want to immediately start sending data using
-      0-RTT.
     * ``local_port`` is the UDP port number that this client wants to bind.
     """
     loop = asyncio.get_event_loop()
     local_host = "::"
+
+    # if host is not an IP address, pass it to enable SNI
+    try:
+        ipaddress.ip_address(host)
+        server_name = None
+    except ValueError:
+        server_name = host
 
     # lookup remote address
     infos = await loop.getaddrinfo(host, port, type=socket.SOCK_DGRAM)
@@ -64,11 +66,9 @@ async def connect(
     if configuration is None:
         configuration = QuicConfiguration(is_client=True)
     if configuration.server_name is None:
-        configuration.server_name = host
+        configuration.server_name = server_name
     connection = QuicConnection(
-        configuration=configuration,
-        session_ticket_handler=session_ticket_handler,
-        token_handler=token_handler,
+        configuration=configuration, session_ticket_handler=session_ticket_handler
     )
 
     # explicitly enable IPv4/IPv6 dual stack
@@ -88,7 +88,7 @@ async def connect(
     )
     protocol = cast(QuicConnectionProtocol, protocol)
     try:
-        protocol.connect(addr, transmit=wait_connected)
+        protocol.connect(addr)
         if wait_connected:
             await protocol.wait_connected()
         yield protocol
@@ -96,3 +96,32 @@ async def connect(
         protocol.close()
         await protocol.wait_closed()
         transport.close()
+
+
+async def change_transport(protocol: QuicConnectionProtocol, local_port: int, local_host: str = "::"):
+    # explicitly enable IPv4/IPv6 dual stack
+    # local_host = "::"
+    # local_host = "::ffff:192.168.40.130"
+
+    
+    loop = asyncio.get_event_loop()
+
+    sock = socket.socket(socket.AF_INET6, socket.SOCK_DGRAM)
+    completed = False
+
+    try:
+        sock.setsockopt(socket.IPPROTO_IPV6, socket.IPV6_V6ONLY, 0)
+        sock.bind((local_host, local_port))
+        # print("Binded to:", (local_host, local_port))
+        completed = True
+    finally:
+        if not completed:
+            sock.close()
+    
+    # connect
+    transport, protocol = await loop.create_datagram_endpoint(
+        lambda: protocol,
+        sock=sock,
+    )
+    protocol = cast(QuicConnectionProtocol, protocol)
+

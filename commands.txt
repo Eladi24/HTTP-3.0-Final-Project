@@ -1,0 +1,10 @@
+source myenv/bin/activate // For virtual environment
+python3 examples/http3_server.py --certificate tests/ssl_cert.pem --private-key tests/ssl_key.pem
+
+python3 examples/http3_client.py --ca-certs tests/pycacert.pem https://localhost:4433/
+
+python3 ./dos/dos_server.py -c tests/ssl_cert.pem -k tests/ssl_key.pem --port 8053 --host 10.0.2.15 //Dos Attack
+python3 ./dos/dos_client.py --port 8053 -v --host 10.0.2.15
+
+python3 ./covert/covert_server.py -c tests/ssl_cert.pem -k tests/ssl_key.pem --port 8053 --host 10.0.2.15
+python3 ./covert/covert_client.py --port 8053 -v --host 10.0.2.15 --insecure
