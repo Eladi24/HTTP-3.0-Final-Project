@@ -112,9 +112,6 @@ class StreamDataReceived(QuicEvent):
     stream_id: int
     "The ID of the stream the data was received for."
 
-    spin_bit: Optional[bool]
-    "The spin bit of the STREAM frame."
-
 
 @dataclass
 class StreamReset(QuicEvent):
