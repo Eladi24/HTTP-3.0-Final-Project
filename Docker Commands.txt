@@ -1,0 +1,4 @@
+docker stop $(docker ps -q)//Stop Dockers
+docker rm $(docker ps -a -q) //Remove Dockers
+docker rmi $(docker images -q) //Remove image Dockers
+
