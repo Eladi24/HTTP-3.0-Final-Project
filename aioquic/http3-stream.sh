@@ -4,9 +4,12 @@
 #The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 #THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+SCRIPT_DIR="$(pwd)"
+SSLKEYLOGFILE="$SCRIPT_DIR/sslkeys-stream.log"
+export SSLKEYLOGFILE
 
 while true
 do
    #max_table_capacity in aioquic must be of value 16 or lower.
-   sudo seq 1 100 | timeout 5s xargs -n1 -P100 python3 examples/http3_client.py https://caddyserver.com/
+   sudo seq 1 100 | timeout 5s xargs -n1 -P100 python3 examples/http3_client.py -l sslkeys-stream.log https://caddyserver.com/
 done

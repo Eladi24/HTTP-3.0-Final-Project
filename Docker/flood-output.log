@@ -1,0 +1,524 @@
+[*] SSL key log file will be saved at: /root/sslkeys-flood.log
+    % Total    % Received % Xferd  Average Speed   Time      %T iTmoet a l      T i%m eR e cCeuirvreedn t%
+  X f e r d     A v e r a g e   S p e e d       T i m e         T iDmleo ad  Upload   Total   Spent    L ef t    TSipmeee d 
+e n t0
+          0         0           0         0           0            D0l o a d     U0p l-o-a:d- - : -T-o t-a-l: - - :S-p-e n-t- : - - :L-e-f t     S p0eed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  % Total    % Received % Xferd  Average Speed   Time    Time   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0    % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+        Time  Curre nt
+                                                            Dload  Upload   Total   Spent    Left  Speed
+  0     Dloa   0 --:--:-- --:--:-- --:--:--     0d  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     00    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+            % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0                      Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  % Total    % Received % Xferd  Average Speed   Time    Ti  % Totalm  e     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+   0     0    0     0     0     0      0      0 --:--:-- --:--:-- --:--:--     0% Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0* Host caddyserver.com:443 was resolved.
+* IPv6: 2604:a880:2:d0::21b0:6001
+* IPv4: 165.227.20.207
+*   Trying [2604:a880:2:d0::21b0:6001]:443...
+* Immediate connect fail for 2604:a880:2:d0::21b0:6001: Network is unreachable
+*   Trying 165.227.20.207:443...
+* Host caddyserver.com:443 was resolved.
+* IPv6: 2604:a880:2:d0::21b0:6001
+* IPv4: 165.227.20.207
+*   Trying [2604:a880:2:d0::21b0:6001]:443...
+* Immediate connect fail for 2604:a880:2:d0::21b0:6001: Network is unreachable
+*   Trying 165.227.20.207:443...
+* Host caddyserver.com:443 was resolved.
+* IPv6: 2604:a880:2:d0::21b0:6001
+* IPv4: 165.227.20.207
+*   Trying [2604:a880:2:d0::21b0:6001]:443...
+* Immediate connect fail for 2604:a880:2:d0::21b0:6001: Network is unreachable
+*   Trying 165.227.20.207:443...
+* * Host caddyserver.com:443 was resolved.
+* IPv6: 2604:a880:2:d0::21b0:6001
+* IPv4: 165.227.20.207
+*   Trying [2604:a880:2:d0::21b0:6001]:443...
+* Immediate connect fail for 2604:a880:2:d0::21b0:6001: Network is unreachable
+*   Trying 165.227.20.207:443...
+Host caddyserver.com:443 was resolved.
+* IPv6: 2604:a880:2:d0::21b0:6001
+* IPv4: 165.227.20.207
+*   Trying [2604:a880:2:d0::21b0:6001]:443...
+* Immediate connect fail for 2604:a880:2:d0::21b0:6001: Network is unreachable
+*   Trying 165.227.20.207:443...
+* Host caddyserver.com:443 was resolved.
+* IPv6: 2604:a880:2:d0::21b0:6001
+* IPv4: 165.227.20.207
+*   Trying [2604:a880:2:d0::21b0:6001]:443...
+* Immediate connect fail for 2604:a880:2:d0::21b0:6001: Network is unreachable
+*   Trying 165.227.20.207:443...
+* Host caddyserver.com:443 was resolved.
+* Host caddyserver.com:443 was resolved.
+* IPv6: 2604:a880:2:d0::21b0:6001
+* IPv4: 165.227.20.207
+*   Trying [2604:a880:2:d0::21b0:6001]:443...
+* Immediate connect fail for 2604:a880:2:d0::21b0:6001: Network is unreachable
+*   Trying 165.227.20.207:443...
+* IPv6: 2604:a880:2:d0::21b0:6001
+* IPv4: 165.227.20.207
+*   Trying [2604:a880:2:d0::21b0:6001]:443...
+* Immediate connect fail for 2604:a880:2:d0::21b0:6001: Network is unreachable
+*   Trying 165.227.20.207:443...
+* Host caddyserver.com:443 was resolved.
+* IPv6: 2604:a880:2:d0::21b0:6001
+* IPv4: 165.227.20.207
+*   Trying [2604:a880:2:d0::21b0:6001]:443...
+* Immediate connect fail for 2604:a880:2:d0::21b0:6001: Network is unreachable
+*   Trying 165.227.20.207:443...
+* Host caddyserver.com:443 was resolved.
+* IPv6: 2604:a880:2:d0::21b0:6001
+* IPv4: 165.227.20.207
+*   Trying [2604:a880:2:d0::21b0:6001]:443...
+* Immediate connect fail for 2604:a880:2:d0::21b0:6001: Network is unreachable
+*   Trying 165.227.20.207:443...
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0*  CAfile: none
+*  CApath: /etc/ssl/certs
+:-- --:--:--     0*  CAfile: none
+*  CApath: /etc/ssl/certs
+- --:--:--     0*  CAfile: none
+*  CApath: /etc/ssl/certs
+- --:--:-- --:--:--     0*  CAfile: none
+*  CApath: /etc/ssl/certs
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0*  CAfile: none
+*  CApath: /etc/ssl/certs
+*   Trying [2604:a880:2:d0::21b0:6001]:443...
+* Immediate connect fail for 2604:a880:2:d0::21b0:6001: Network is unreachable
+*   Trying 165.227.20.207:443...
+*   Trying [2604:a880:2:d0::21b0:6001]:443...
+* Immediate connect fail for 2604:a880:2:d0::21b0:6001: Network is unreachable
+*   Trying 165.227.20.207:443...
+*   Trying [2604:a880:2:d0::21b0:6001]:443...
+* Immediate connect fail for 2604:a880:2:d0::21b0:6001: Network is unreachable
+*   Trying 165.227.20.207:443...
+*   Trying [2604:a880:2:d0::21b0:6001]:443...
+* Immediate connect fail for 2604:a880:2:d0::21b0:6001: Network is unreachable
+*   Trying 165.227.20.207:443...
+*   Trying [2604:a880:2:d0::21b0:6001]:443...
+* Immediate connect fail for 2604:a880:2:d0::21b0:6001: Network is unreachable
+*   Trying 165.227.20.207:443...
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0*  CAfile: none
+*  CApath: /etc/ssl/certs
+*   Trying [2604:a880:2:d0::21b0:6001]:443...
+* Immediate connect fail for 2604:a880:2:d0::21b0:6001: Network is unreachable
+*   Trying 165.227.20.207:443...
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0*  CAfile: none
+*  CApath: /etc/ssl/certs
+*   Trying [2604:a880:2:d0::21b0:6001]:443...
+* Immediate connect fail for 2604:a880:2:d0::21b0:6001: Network is unreachable
+*   Trying 165.227.20.207:443...
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0*  CAfile: none
+*  CApath: /etc/ssl/certs
+*   Trying [2604:a880:2:d0::21b0:6001]:443...
+* Immediate connect fail for 2604:a880:2:d0::21b0:6001: Network is unreachable
+*   Trying 165.227.20.207:443...
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0*  CAfile: none
+*  CApath: /etc/ssl/certs
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0*  CAfile: none
+*  CApath: /etc/ssl/certs
+* Server certificate:
+*  subject: CN=caddyserver.com
+*  start date: Dec 22 19:32:23 2024 GMT
+*  expire date: Mar 22 19:32:22 2025 GMT
+*  subjectAltName: host "caddyserver.com" matched cert's "caddyserver.com"
+*  issuer: C=US; O=Let's Encrypt; CN=E6
+*  SSL certificate verify ok.
+* * * Connected to caddyserver.com (165.227.20.207) port 443
+* using HTTP/3
+Server certificate:
+*  subject: CN=caddyserver.com
+* * [HTTP/3] [0] OPENED stream for https://caddyserver.com/
+* [HTTP/3] [0] [:method: GET]
+* [HTTP/3] [0] [:scheme: https]
+* [HTTP/3] [0] [:authority: caddyserver.com]
+* [HTTP/3] [0] [:path: /]
+* [HTTP/3] [0] [user-agent: curl/8.12.0-DEV]
+* [HTTP/3] [0] [accept: */*]
+* [HTTP/3] [0] [method: HEAD]
+* [HTTP/3] [0] [method: POST]
+* [HTTP/3] [0] [method: GET]
+*  start date: Dec 22 19:32:23 2024 GMT
+*  expire date: Mar 22 19:32:22 2025 GMT
+*  subjectAltName: host "caddyserver.com" matched cert's "caddyserver.com"
+*  issuer: C=US; O=Let's Encrypt; CN=E6
+*  SSL certificate verify ok.
+[HTTP/3] [0] [settings: 0]
+* Connected to caddyserver.com (165.227.20.207) port 443
+* using HTTP/3
+* * [HTTP/3] [0] OPENED stream for https://caddyserver.com/
+* [HTTP/3] [0] [:method: GET]
+* [HTTP/3] [0] [:scheme: https]
+* [HTTP/3] [0] [:authority: caddyserver.com]
+* [HTTP/3] [0] [:path: /]
+* [HTTP/3] [0] [user-agent: curl/8.12.0-DEV]
+* [HTTP/3] [0] [accept: */*]
+* [HTTP/3] [0] [method: HEAD]
+* [HTTP/3] [0] [method: POST]
+* [HTTP/3] [0] [method: GET]
+* [HTTP/3] [0] [settings: 0]
+* [HTTP/3] [0] [content-length: 104]
+* [HTTP/3] [0] [content-type: application/x-www-form-urlencoded]
+[HTTP/3] [0] [content-length: 104]
+* [HTTP/3] [0] [content-type: application/x-www-form-urlencoded]
+> GET / HTTP/3
+> Host: caddyserver.com
+> User-Agent: curl/8.12.0-DEV
+> Accept: */*
+> method: HEAD
+> method: POST
+> method: GET
+> settings: 0
+> Content-Length: 104
+> Content-Type: application/x-www-form-urlencoded
+> 
+} [104 bytes data]
+* upload completely sent off: 104 bytes
+Server certificate:
+* > * Server certificate:
+*  subject: CN=caddyserver.com
+*  start date: Dec 22 19:32:23 2024 GMT
+*  expire date: Mar 22 19:32:22 2025 GMT
+*  subjectAltName: host "caddyserver.com" matched cert's "caddyserver.com"
+*  issuer: C=US; O=Let's Encrypt; CN=E6
+*  SSL certificate verify ok.
+* Connected to caddyserver.com (165.227.20.207) port 443
+* using HTTP/3
+* GET / HTTP/3
+> Host: caddyserver.com
+> User-Agent: curl/8.12.0-DEV
+> Accept: */*
+> method: HEAD
+> method: POST
+> method: GET
+> settings: 0
+> Content-Length: 104
+> Content-Type: application/x-www-form-urlencoded
+> 
+} [104 bytes data]
+* upload completely sent off: 104 bytes
+[HTTP/3] [0] OPENED stream for https://caddyserver.com/
+* [HTTP/3] [0] [:method: GET]
+* [HTTP/3] [0] [:scheme: https]
+* [HTTP/3] [0] [:authority: caddyserver.com]
+* [HTTP/3] [0] [:path: /]
+* [HTTP/3] [0] [user-agent: curl/8.12.0-DEV]
+* [HTTP/3] [0] [accept: */*]
+* [HTTP/3] [0] [method: HEAD]
+* [HTTP/3] [0] [method: POST]
+* [HTTP/3] [0] [method: GET]
+* [HTTP/3] [0] [settings: 0]
+* [HTTP/3] [0] [content-length: 104]
+* [HTTP/3] [0] [content-type: application/x-www-form-urlencoded]
+> GET / HTTP/3
+> Host: caddyserver.com
+> User-Agent: curl/8.12.0-DEV
+> Accept: */*
+> method: HEAD
+> method: POST
+> method: GET
+> settings: 0
+> Content-Length: 104
+> Content-Type: application/x-www-form-urlencoded
+> 
+} [104 bytes data]
+* upload completely sent off: 104 bytes
+ subject: CN=caddyserver.com
+*  start date: Dec 22 19:32:23 2024 GMT
+*  expire date: Mar 22 19:32:22 2025 GMT
+*  subjectAltName: host "caddyserver.com" matched cert's "caddyserver.com"
+*  issuer: C=US; O=Let's Encrypt; CN=E6
+*  SSL certificate verify ok.
+* Connected to caddyserver.com (165.227.20.207) port 443
+* using HTTP/3
+* Server certificate:
+*  subject: CN=caddyserver.com
+*  start date: Dec 22 19:32:23 2024 GMT
+*  expire date: Mar 22 19:32:22 2025 GMT
+*  subjectAltName: host "caddyserver.com" matched cert's "caddyserver.com"
+*  issuer: C=US; O=Let's Encrypt; CN=E6
+*  SSL certificate verify ok.
+* [HTTP/3] [0] OPENED stream for https://caddyserver.com/
+* [HTTP/3] [0] [:method: GET]
+* [HTTP/3] [0] [:scheme: https]
+* [HTTP/3] [0] [:authority: caddyserver.com]
+* [HTTP/3] [0] [:path: /]
+* [HTTP/3] [0] [user-agent: curl/8.12.0-DEV]
+* [HTTP/3] [0] [accept: */*]
+* [HTTP/3] [0] [method: HEAD]
+* [HTTP/3] [0] [method: POST]
+* [HTTP/3] [0] [method: GET]
+* [HTTP/3] [0] [settings: 0]
+* [HTTP/3] [0] [content-length: 104]
+* Connected to caddyserver.com (165.227.20.207) port 443
+* * [HTTP/3] [0] [content-type: application/x-www-form-urlencoded]
+using HTTP/3
+* [HTTP/3] [0] OPENED stream for https://caddyserver.com/
+* [HTTP/3] [0] [:method: GET]
+* [HTTP/3] [0] [:scheme: https]
+* [HTTP/3] [0] [:authority: caddyserver.com]
+* [HTTP/3] [0] [:path: /]
+* [HTTP/3] [0] [user-agent: curl/8.12.0-DEV]
+* [HTTP/3] [0] [accept: */*]
+* [HTTP/3] [0] [method: HEAD]
+* [HTTP/3] [0] [method: POST]
+* [HTTP/3] [0] [method: GET]
+* [HTTP/3] [0] [settings: 0]
+* [HTTP/3] [0] [content-length: 104]
+* [HTTP/3] [0] [content-type: application/x-www-form-urlencoded]
+> GET / HTTP/3
+> Host: caddyserver.com
+> User-Agent: curl/8.12.0-DEV
+> Accept: */*
+> method: HEAD
+> method: POST
+> method: GET
+> settings: 0
+> Content-Length: 104
+> Content-Type: application/x-www-form-urlencoded
+> 
+} [104 bytes data]
+* upload completely sent off: 104 bytes
+> GET / HTTP/3
+> Host: caddyserver.com
+> User-Agent: curl/8.12.0-DEV
+> Accept: */*
+> method: HEAD
+> method: POST
+> method: GET
+> settings: 0
+> Content-Length: 104
+> Content-Type: application/x-www-form-urlencoded
+> 
+} [104 bytes data]
+* upload completely sent off: 104 bytes
+* * Server certificate:
+*  subject: CN=caddyserver.com
+*  start date: Dec 22 19:32:23 2024 GMT
+*  expire date: Mar 22 19:32:22 2025 GMT
+*  subjectAltName: host "caddyserver.com" matched cert's "caddyserver.com"
+*  issuer: C=US; O=Let's Encrypt; CN=E6
+*  SSL certificate verify ok.
+* Connected to caddyserver.com (165.227.20.207) port 443
+* using HTTP/3
+* [HTTP/3] [0] OPENED stream for https://caddyserver.com/
+* [HTTP/3] [0] [:method: GET]
+* [HTTP/3] [0] [:scheme: https]
+* [HTTP/3] [0] [:authority: caddyserver.com]
+* [HTTP/3] [0] [:path: /]
+* [HTTP/3] [0] [user-agent: curl/8.12.0-DEV]
+* [HTTP/3] [0] [accept: */*]
+* [HTTP/3] [0] [method: HEAD]
+* [HTTP/3] [0] [method: POST]
+* [HTTP/3] [0] [method: GET]
+* [HTTP/3] [0] [settings: 0]
+* [HTTP/3] [0] [content-length: 104]
+* [HTTP/3] [0] [content-type: application/x-www-form-urlencoded]
+* Server certificate:
+*  subject: CN=caddyserver.com
+*  start date: Dec 22 19:32:23 2024 GMT
+*  expire date: Mar 22 19:32:22 2025 GMT
+*  subjectAltName: host "caddyserver.com" matched cert's "caddyserver.com"
+*  issuer: C=US; O=Let's Encrypt; CN=E6
+*  SSL certificate verify ok.
+* Server certificate:
+*  subject: CN=caddyserver.com
+*  start date: Dec 22 19:32:23 2024 GMT
+*  expire date: Mar 22 19:32:22 2025 GMT
+*  subjectAltName: host "caddyserver.com" matched cert's "caddyserver.com"
+*  issuer: C=US; O=Let's Encrypt; CN=E6
+*  SSL certificate verify ok.
+* Connected to caddyserver.com (165.227.20.207) port 443
+* using HTTP/3
+* [HTTP/3] [0] OPENED stream for https://caddyserver.com/
+* [HTTP/3] [0] [:method: GET]
+* [HTTP/3] [0] [:scheme: https]
+* [HTTP/3] [0] [:authority: caddyserver.com]
+* [HTTP/3] [0] [:path: /]
+* [HTTP/3] [0] [user-agent: curl/8.12.0-DEV]
+* [HTTP/3] [0] [accept: */*]
+* [HTTP/3] [0] [method: HEAD]
+* [HTTP/3] [0] [method: POST]
+* [HTTP/3] [0] [method: GET]
+* [HTTP/3] [0] [settings: 0]
+* [HTTP/3] [0] [content-length: 104]
+* [HTTP/3] [0] [content-type: application/x-www-form-urlencoded]
+> GET / HTTP/3
+> Host: caddyserver.com
+> User-Agent: curl/8.12.0-DEV
+> Accept: */*
+> method: HEAD
+> method: POST
+> method: GET
+> settings: 0
+> Content-Length: 104
+> Content-Type: application/x-www-form-urlencoded
+> 
+} [104 bytes data]
+* upload completely sent off: 104 bytes
+* Connected to caddyserver.com (165.227.20.207) port 443
+* using HTTP/3
+* [HTTP/3] [0] OPENED stream for https://caddyserver.com/
+* [HTTP/3] [0] [:method: GET]
+* [HTTP/3] [0] [:scheme: https]
+* [HTTP/3] [0] [:authority: caddyserver.com]
+* [HTTP/3] [0] [:path: /]
+* [HTTP/3] [0] [user-agent: curl/8.12.0-DEV]
+* [HTTP/3] [0] [accept: */*]
+* [HTTP/3] [0] [method: HEAD]
+* [HTTP/3] [0] [method: POST]
+* [HTTP/3] [0] [method: GET]
+* [HTTP/3] [0] [settings: 0]
+* [HTTP/3] [0] [content-length: 104]
+* [HTTP/3] [0] [content-type: application/x-www-form-urlencoded]
+> GET / HTTP/3
+> Host: caddyserver.com
+> User-Agent: curl/8.12.0-DEV
+> Accept: */*
+> method: HEAD
+> method: POST
+> method: GET
+> settings: 0
+> Content-Length: 104
+> Content-Type: application/x-www-form-urlencoded
+> 
+} [104 bytes data]
+* upload completely sent off: 104 bytes
+> GET / HTTP/3
+> Host: caddyserver.com
+> User-Agent: curl/8.12.0-DEV
+> Accept: */*
+> method: HEAD
+> method: POST
+> method: GET
+> settings: 0
+> Content-Length: 104
+> Content-Type: application/x-www-form-urlencoded
+> 
+} [104 bytes data]
+* upload completely sent off: 104 bytes
+Server certificate:
+*  subject: CN=caddyserver.com
+*  start date: Dec 22 19:32:23 2024 GMT
+*  expire date: Mar 22 19:32:22 2025 GMT
+*  subjectAltName: host "caddyserver.com" matched cert's "caddyserver.com"
+*  issuer: C=US; O=Let's Encrypt; CN=E6
+*  SSL certificate verify ok.
+* Connected to caddyserver.com (165.227.20.207) port 443
+* using HTTP/3
+* [HTTP/3] [0] OPENED stream for https://caddyserver.com/
+* [HTTP/3] [0] [:method: GET]
+* [HTTP/3] [0] [:scheme: https]
+* [HTTP/3] [0] [:authority: caddyserver.com]
+* [HTTP/3] [0] [:path: /]
+* [HTTP/3] [0] [user-agent: curl/8.12.0-DEV]
+* [HTTP/3] [0] [accept: */*]
+* [HTTP/3] [0] [method: HEAD]
+* [HTTP/3] [0] [method: POST]
+* [HTTP/3] [0] [method: GET]
+* [HTTP/3] [0] [settings: 0]
+* [HTTP/3] [0] [content-length: 104]
+* [HTTP/3] [0] [content-type: application/x-www-form-urlencoded]
+> GET / HTTP/3
+> Host: caddyserver.com
+> User-Agent: curl/8.12.0-DEV
+> Accept: */*
+> method: HEAD
+> method: POST
+> method: GET
+> settings: 0
+> Content-Length: 104
+> Content-Type: application/x-www-form-urlencoded
+> 
+} [104 bytes data]
+* upload completely sent off: 104 bytes
+* ALPN: curl offers h2,http/1.1
+} [5 bytes data]
+* TLSv1.2 (OUT), TLS handshake, Client hello (1):
+} [512 bytes data]
+*  CAfile: none
+*  CApath: /etc/ssl/certs
+* Server certificate:
+*  subject: CN=caddyserver.com
+*  start date: Dec 22 19:32:23 2024 GMT
+*  expire date: Mar 22 19:32:22 2025 GMT
+*  subjectAltName: host "caddyserver.com" matched cert's "caddyserver.com"
+*  issuer: C=US; O=Let's Encrypt; CN=E6
+*  SSL certificate verify ok.
+* Connected to caddyserver.com (165.227.20.207) port 443
+* using HTTP/3
+* [HTTP/3] [0] OPENED stream for https://caddyserver.com/
+* [HTTP/3] [0] [:method: GET]
+* [HTTP/3] [0] [:scheme: https]
+* [HTTP/3] [0] [:authority: caddyserver.com]
+* [HTTP/3] [0] [:path: /]
+* [HTTP/3] [0] [user-agent: curl/8.12.0-DEV]
+* [HTTP/3] [0] [accept: */*]
+* [HTTP/3] [0] [method: HEAD]
+* [HTTP/3] [0] [method: POST]
+* [HTTP/3] [0] [method: GET]
+* [HTTP/3] [0] [settings: 0]
+* [HTTP/3] [0] [content-length: 104]
+* [HTTP/3] [0] [content-type: application/x-www-form-urlencoded]
+> GET / HTTP/3
+> Host: caddyserver.com
+> User-Agent: curl/8.12.0-DEV
+> Accept: */*
+> method: HEAD
+> method: POST
+> method: GET
+> settings: 0
+> Content-Length: 104
+> Content-Type: application/x-www-form-urlencoded
+> 
+} [104 bytes data]
+* upload completely sent off: 104 bytes
+< HTTP/3 200 
+< content-type: text/html; charset=utf-8
+< content-length: 71374
+< server: Caddy
+< date: Mon, 20 Jan 2025 10:11:25 GMT
+< 
+{ [6509 bytes data]
+< HTTP/3 200 
+< server: Caddy
+< date: Mon, 20 Jan 2025 10:11:25 GMT
+< content-type: text/html; charset=utf-8
+< content-length: 71374
+< 
+{ [4091 bytes data]
+< < HTTP/3 200 
+< content-length: 71386
+< server: Caddy
+< date: Mon, 20 Jan 2025 10:11:25 GMT
+< content-type: text/html; charset=utf-8
+HTTP/3 200 
+< date: Mon, 20 Jan 2025 10:11:25 GMT
+< content-type: text/html; charset=utf-8
+< content-length: 71374
+< server: Caddy
+< 
+{ [4091 bytes data]
+< 
+{ [5300 bytes data]
+< HTTP/3 200 
+< server: Caddy
+< date: Mon, 20 Jan 2025 10:11:25 GMT
+< content-type: text/html; charset=utf-8
+< content-length: 71366
+< 
+{ [1205 bytes data]
+< HTTP/3 200 
+< server: Caddy
+< date: Mon, 20 Jan 2025 10:11:25 GMT
+< content-type: text/html; charset=utf-8
+< content-length: 71366
+< 
+{ [3623 bytes data]
+
