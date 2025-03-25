@@ -14,6 +14,8 @@ python3 ./dos/dos_client.py -l sslkeys-dos.log --port 8053 -v --host 10.0.2.15
 python3 ./covert/covert_server.py -c tests/ssl_cert.pem -k tests/ssl_key.pem --port 8053 --host 10.0.2.15
 python3 ./covert/covert_client.py -l sslkeys-covert.log --port 8053 -v --host 10.0.2.15 --insecure
 
+sudo ip addr add 192.168.40.130 dev enp0s3
+
 "python", "examples/http3_server.py", \
      "--certificate", "ssl_cert.pem", \
      "--private-key", "ssl_key.pem", \
