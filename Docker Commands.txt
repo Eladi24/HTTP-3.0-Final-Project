@@ -1,8 +1,18 @@
+docker ps //View Running Dockers
+docker images --all //List Images
+docker system df // View overall Useage
 docker stop $(docker ps -q) //Stop Dockers
 docker rm $(docker ps -a -q) //Remove Dockers
 docker rmi $(docker images -q) //Remove image Dockers
+docker builder prune //Prune Build Cache
+docker system prune //Prune Unused Objects
 
 docker build -t aioquic-docker .
-
 docker run -dit --name aioquic-container -p 4433:4433 aioquic-docker
 python3 examples/http3_client.py --ca-certs ./ssl_cert.pem https://172.17.0.2:4433/ --insecure
+
+docker build -t quicforge .
+docker run --cap-add=NET_ADMIN --cap-add=NET_RAW -dit --name quicforge-container -p 8443:4433 quicforge
+docker exec -it quicforge-container /bin/bash
+
+
