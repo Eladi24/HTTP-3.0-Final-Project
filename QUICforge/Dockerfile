@@ -23,10 +23,13 @@ RUN pip install --no-cache-dir NetfilterQueue scapy
 # Set working directory for subsequent operations
 WORKDIR /opt
 
+COPY aioquic.diff /opt/aioquic.diff
+
 # Clone the aioquic repository, checkout a specific commit, and install it.
 RUN git clone https://github.com/aiortc/aioquic.git && \
     cd aioquic && \
     git checkout 7f27a0b8fd2c4ab755c5a7ba32b4d432dda305dd && \
+    git apply /opt/aioquic.diff && \
     pip install -e . && \
     pip install --no-cache-dir wsproto && \
     pip install --no-cache-dir starlette && \

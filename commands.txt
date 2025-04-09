@@ -1,6 +1,8 @@
 python3 -m venv myenv  // Create virtual environment
 
 source myenv/bin/activate // For virtual environment
+deactivate
+
 python3 examples/http3_server.py --certificate tests/ssl_cert.pem --private-key tests/ssl_key.pem
 
 python3 examples/http3_client.py --ca-certs tests/pycacert.pem https://localhost:4433/
@@ -21,6 +23,8 @@ sudo ip addr add 192.168.40.130 dev enp0s3
      "--private-key", "ssl_key.pem", \
      "--host", "0.0.0.0", \
      "--port", "4433"
+     
+python3 request_forgery.py vn 172.17.0.2 123.123.123.123 --victim_port 4433 --target_port 12345
 
 
 
