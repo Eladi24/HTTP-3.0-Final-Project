@@ -17,3 +17,24 @@ python examples/http3_server.py --certificate ssl_cert.pem --private-key ssl_key
 docker build -t quicforge .
 docker run --cap-add=NET_ADMIN --cap-add=NET_RAW -dit --name quicforge-container -p 12345:4433 quicforge
 docker exec -it quicforge-container /bin/bash
+
+docker exec quicforge-container rm -v /opt/lsquic/include/lsquic.h
+docker exec quicforge-container rm -v /opt/lsquic/src/liblsquic/lsquic_conn.c
+docker cp lsquic.h quicforge-container:/opt/lsquic/include/lsquic.h
+docker cp lsquic_conn.c quicforge-container:/opt/lsquic/src/liblsquic/lsquic_conn.c
+
+docker run -it --name client-container -p 1234:4433 -v shared-data:/app/shared client-docker
+
+docker run --cap-add=NET_ADMIN \
+           --cap-add=NET_RAW \
+           -dit \
+           --name quicforge-container \
+           -p 12345:4433 \
+           -v shared-data:/app/shared \
+           -v "$(pwd)/ssl_cert.pem":/mnt/certs/ssl_cert.pem \
+           -v "$(pwd)/ssl_key.pem":/mnt/keys/ssl_key.pem \
+           quicforge
+
+
+
+
