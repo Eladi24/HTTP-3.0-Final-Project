@@ -23,7 +23,10 @@ docker exec quicforge-container rm -v /opt/lsquic/src/liblsquic/lsquic_conn.c
 docker cp lsquic.h quicforge-container:/opt/lsquic/include/lsquic.h
 docker cp lsquic_conn.c quicforge-container:/opt/lsquic/src/liblsquic/lsquic_conn.c
 
-docker run -it --name client-container -p 1234:4433 -v shared-data:/app/shared client-docker
+docker build -t client-docker .
+docker run -dit --name client-container -p 1234:4433 -v shared-data:/app/shared client-docker
+docker exec -it client-container /bin/bash
+python3 minimal_http_client.py https://172.17.0.2:4433/
 
 docker run --cap-add=NET_ADMIN \
            --cap-add=NET_RAW \
