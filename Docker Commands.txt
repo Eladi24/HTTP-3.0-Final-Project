@@ -39,5 +39,15 @@ docker run --cap-add=NET_ADMIN \
            quicforge
 
 
+docker run --cap-add=NET_ADMIN \
+           --cap-add=NET_RAW \
+           --network=host \
+           -dit \
+           --name quicforge-container \
+           -v shared-data:/app/shared \
+           -v "$(pwd)/ssl_cert.pem:/mnt/certs/ssl_cert.pem" \
+           -v "$(pwd)/ssl_key.pem:/mnt/keys/ssl_key.pem" \
+           quicforge
+
 
 

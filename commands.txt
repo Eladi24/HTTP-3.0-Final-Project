@@ -24,7 +24,7 @@ sudo ip addr add 192.168.40.130 dev enp0s3
      "--host", "0.0.0.0", \
      "--port", "4433"
      
-python3 request_forgery.py vn 172.17.0.2 123.123.123.123 --victim_port 4433 --target_port 12345
+python3 request_forgery.py ack 172.17.0.2 123.123.123.123 --victim_port 4433 --target_port 12345 -C 172.17.0.3
 
 
 
