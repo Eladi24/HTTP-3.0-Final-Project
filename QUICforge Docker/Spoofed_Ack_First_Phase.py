@@ -237,25 +237,29 @@ def ack_callback(packet, args=None):
         # Try to parse QUIC header
         buf = Buffer(data=udp_payload)
         
-        try:
-            header = pull_quic_header(buf, host_cid_length=20)
-        except ValueError as e:
-            if "Packet fixed bit is zero" in str(e):
-                print("[!] Received a packet with fixed bit set to 0, possibly not a QUIC packet")
-                packet.accept()
-                return
-            else:
-                print(f"[!] Error parsing QUIC header: {str(e)}")
-                packet.accept()
-                return
-        
-        # Print parsed header info
-        print(f"[+] QUIC header: {header}")
-        print(f"[+] QUIC packet type: {header.packet_type}")
-        print(f"[+] Version: {header.version if header.version else 'None'}")
-        print(f"[+] DCID: {header.destination_cid.hex()}")
-        if header.source_cid:
-            print(f"[+] SCID: {header.source_cid.hex()}")
+        while not buf.eof():
+            start_off = buf.tell()
+            try:
+                header = pull_quic_header(buf, host_cid_length=20)
+                # Print parsed header info
+                print(f"[+] QUIC header: {header}")
+                print(f"[+] QUIC packet type: {header.packet_type}")
+                print(f"[+] Version: {header.version if header.version else 'None'}")
+                print(f"[+] DCID: {header.destination_cid.hex()}")
+                if header.source_cid:
+                    print(f"[+] SCID: {header.source_cid.hex()}")
+                end_off = start_off + header.packet_length
+                buf.seek(end_off)
+                print(f"[+] Packet length: {header.packet_length} bytes")
+            except ValueError as e:
+                if "Packet fixed bit is zero" in str(e):
+                    print("[!] Received a packet with fixed bit set to 0, possibly not a QUIC packet")
+                    packet.accept()
+                    return
+                else:
+                    print(f"[!] Error parsing QUIC header: {str(e)}")
+                    packet.accept()
+                    return
             
         # Always forward the packet - we're just analyzing, not modifying
         packet.accept()
@@ -365,7 +369,7 @@ def main():
             print("[!] ACK Mode")
             print("[!] Waiting for client to establish connection")
             # Start the shell command :"tcpdump -i any -n udp port 4433 -c 5"
-            
+            # subprocess.run("tcpdump -i any -n udp port 4433 -c 5",shell=True)
 
         else:
             url, configuration = configure_client(args)

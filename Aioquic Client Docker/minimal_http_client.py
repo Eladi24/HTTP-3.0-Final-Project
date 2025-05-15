@@ -28,7 +28,7 @@ from aioquic.quic.events import QuicEvent
 from aioquic.tls import CipherSuite, SessionTicket
 
 from aioquic.quic.packet import QuicProtocolVersion
-
+from aioquic.quic.logger import QuicFileLogger
 try:
     import uvloop
 except ImportError:
@@ -351,6 +351,8 @@ if __name__ == "__main__":
         QuicProtocolVersion.VERSION_2,
         QuicProtocolVersion.VERSION_1,
     ]
-    configuration.quic_logger = QuicFileLogger('qlog/client')
-    configuration.secrets_log_file = open('shared_secrets.log', "w") 
+    # Check your configuration setup and ensure it looks something like:
+    configuration.alpn_protocols = ["h3", "h3-29"]  # not [["h3", "h3-29"]]
+    configuration.quic_logger = QuicFileLogger('../app/shared/qlog/client')
+    configuration.secrets_log_file = open('../app/shared/shared_secrets.log', "w") 
     start_client(args.url, configuration, dbg=True)

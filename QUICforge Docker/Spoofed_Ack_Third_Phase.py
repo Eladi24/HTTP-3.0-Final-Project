@@ -276,7 +276,7 @@ def decrypt_quic_packet(packet, keylog_path="./client_secrets.log"):
                                 secret_hex = match.group(2)
                                 secrets[secret_type] = bytes.fromhex(secret_hex)
                                 found_secret_lines.append(f"{secret_type} for connection {connection_id[:8]}...")
-                                print(f"[+] Found {secret_type} for connection {connection_id[:8]}...")
+                                
         except Exception as e:
             print(f"[!] Keylog file error: {str(e)}")
             traceback.print_exc()
@@ -291,9 +291,8 @@ def decrypt_quic_packet(packet, keylog_path="./client_secrets.log"):
         
         # Define cipher suites to try
         cipher_suites_to_try = [
-            (CipherSuite.AES_128_GCM_SHA256, "AES_128_GCM_SHA256"),
-            (CipherSuite.AES_256_GCM_SHA384, "AES_256_GCM_SHA384"),
-            (CipherSuite.CHACHA20_POLY1305_SHA256, "CHACHA20_POLY1305_SHA256")
+            
+            (CipherSuite.AES_256_GCM_SHA384, "AES_256_GCM_SHA384")
         ]
         
         # Prepare to scan through multiple QUIC packets in the datagram
@@ -301,7 +300,7 @@ def decrypt_quic_packet(packet, keylog_path="./client_secrets.log"):
         success = False
         
         # Process all packets in the datagram until we find one we can decrypt
-        while not buf.eof() and not success:
+        while not buf.eof():
             
             start_off = buf.tell()
             print(f"[*] QUIC expected packet number: {QUIC_EXPECTED_PACKET_NUMBER}")
@@ -319,29 +318,22 @@ def decrypt_quic_packet(packet, keylog_path="./client_secrets.log"):
                 # Get the encrypted payload offset
                 encrypted_offset = buf.tell() - start_off
                 
-                # Check if we have enough data for the packet
-                remaining_bytes = len(udp_payload) - start_off
-                if header.packet_length > remaining_bytes:
-                    print(f"[!] Packet length ({header.packet_length}) exceeds available data ({remaining_bytes})")
-                    # Use available data
-                    end_offset = len(udp_payload)
-                else:
-                    end_offset = start_off + header.packet_length
+                end_offset = start_off + header.packet_length
                 
                 print(f"[*] Encrypted payload starts at offset: {encrypted_offset}")
                 print(f"[*] Packet data from {start_off} to {end_offset}")
                 
                 # Skip empty or too small payloads
-                if end_offset - start_off <= encrypted_offset + 16:  # Header + min AEAD tag
-                    print("[!] Payload too small for decryption")
-                    buf.seek(end_offset)
-                    continue
+                # if end_offset - start_off <= encrypted_offset + 16:  # Header + min AEAD tag
+                #     print("[!] Payload too small for decryption")
+                #     buf.seek(end_offset)
+                #     continue
                 
                 # Select appropriate secrets based on packet type
                 packet_secrets = []
                 
-                if header.packet_type == QuicPacketType.INITIAL:
-                    print("[*] This is an INITIAL packet - no decryption attempted")
+                if QUIC_EXPECTED_PACKET_NUMBER == 1:
+                    print("[*] This is the first packet, not encrypted yet")
                     buf.seek(end_offset)
                     continue
                 elif header.packet_type == QuicPacketType.HANDSHAKE:
@@ -363,6 +355,7 @@ def decrypt_quic_packet(packet, keylog_path="./client_secrets.log"):
                     if secrets["SERVER_TRAFFIC_SECRET_0"]:
                         packet_secrets.append(("server_1rtt", secrets["SERVER_TRAFFIC_SECRET_0"]))
                 
+                
                 # If we don't have appropriate secrets for this packet type, skip it
                 if not packet_secrets:
                     print(f"[!] No appropriate secrets for {header.packet_type} packet")
@@ -378,61 +371,49 @@ def decrypt_quic_packet(packet, keylog_path="./client_secrets.log"):
                     if success:
                         break
                         
-                    print(f"[*] Trying cipher suite: {cipher_name}")
-                    
-                    # Try wider range of packet numbers
-                    for pn_offset in range(-10, 50, 1):  # Try many packet numbers (-10 to +49)
+                        
+                    for secret_type, secret in packet_secrets:
                         if success:
                             break
                             
-                        test_pn = QUIC_EXPECTED_PACKET_NUMBER + pn_offset
-                        
-                        # Don't try negative packet numbers
-                        if test_pn < 0:
-                            continue
+                        try:
+                            # Set up crypto context
+                            crypto = CryptoContext()
+                            crypto.setup(
+                                cipher_suite=cipher_suite,
+                                secret=secret,
+                                version=QuicProtocolVersion.VERSION_2
+                            )
+                            print("[*] Crypto context set successfully")
+                            # Try to decrypt
+                            plain_header, decrypted_payload, packet_number, key_update = crypto.decrypt_packet(
+                                packet=packet_data,
+                                encrypted_offset=encrypted_offset,
+                                expected_packet_number=QUIC_EXPECTED_PACKET_NUMBER,
+                            )
                             
-                        # Only try every 5th packet number for large offsets to save time
-                        if abs(pn_offset) > 20 and pn_offset % 5 != 0:
-                            continue
-                        
-                        for secret_type, secret in packet_secrets:
-                            if success:
-                                break
-                                
-                            try:
-                                # Set up crypto context
-                                crypto = CryptoContext()
-                                crypto.setup(
-                                    cipher_suite=cipher_suite,
-                                    secret=secret,
-                                    version=TLS_VERSION_1_3
-                                )
-                                
-                                # Try to decrypt
-                                plain_header, decrypted_payload, packet_number = crypto.decrypt_packet(
-                                    packet=packet_data,
-                                    encrypted_offset=encrypted_offset,
-                                    expected_packet_number=test_pn
-                                )
-                                
-                                # Only consider success if we got a non-empty payload
-                                if not decrypted_payload or len(decrypted_payload) == 0:
-                                    continue
-                                
-                                print(f"[+] Successfully decrypted with {secret_type} secret using {cipher_name} (pn={packet_number})")
-                                print(f"[*] Decrypted payload length: {len(decrypted_payload)} bytes")
-                                if len(decrypted_payload) > 0:
-                                    print(f"[*] First few bytes: {decrypted_payload[:min(16, len(decrypted_payload))].hex()}")
-                                
-                                # We found a packet we could decrypt
-                                success = True
-                                return True, header, decrypted_payload, packet_number
-                                
-                            except Exception as e:
-                                # Only print every 10th error to reduce noise
-                                if pn_offset % 10 == 0:
-                                    print(f"[-] Decryption attempt with {secret_type} using {cipher_name} failed for pn={test_pn}: {str(e)}")
+                            # Only consider success if we got a non-empty payload
+                            if not decrypted_payload or len(decrypted_payload) == 0:
                                 continue
+                            
+                            print(f"[+] Successfully decrypted with {secret_type} secret using {cipher_name} (pn={packet_number})")
+                            print(f"[*] Decrypted payload length: {len(decrypted_payload)} bytes")
+                            if len(decrypted_payload) > 0:
+                                print(f"[*] First few bytes: {decrypted_payload[:min(16, len(decrypted_payload))].hex()}")
+                            print(f"[*] Packet number vs expected: {packet_number} vs {QUIC_EXPECTED_PACKET_NUMBER}")
+                            print(f"[*] Key update: {key_update}")
+                            # We found a packet we could decrypt
+                            success = True
+                            buf.seek(end_offset)  
+                            return True, header, decrypted_payload, packet_number
+                            
+                        except Exception as e:
+                            # Only print every 10th error to reduce noise
+                            # if pn_offset % 10 == 0:
+                            print(f"[-] Decryption attempt with {secret_type} using {cipher_name} failed for : {str(e)}")
+                            traceback.print_exc()
+                            
+                            continue
                 
                 # We couldn't decrypt this packet, move to the next one
                 buf.seek(end_offset)
