@@ -13,6 +13,7 @@ from multiprocessing import Process
 import traceback
 import pickle
 import aioquic
+
 from aioquic.asyncio.client import connect
 from aioquic.asyncio.protocol import QuicConnectionProtocol
 from aioquic.h0.connection import H0_ALPN, H0Connection
@@ -194,7 +195,7 @@ def server_initial_callback(packet, args=None):
 
     packet.accept()
     print("[*] Packet accepted")
-
+    
 def decrypt_quic_packet(packet, keylog_path="./client_secrets.log"):
     """
     Decrypt any type of QUIC packet using TLS secrets from a keylog file.
@@ -205,7 +206,8 @@ def decrypt_quic_packet(packet, keylog_path="./client_secrets.log"):
         keylog_path: Path to the SSL keylog file
         
     Returns:
-        Tuple containing (success, header, decrypted_payload, packet_number)
+        Tuple containing (success, list_of_decrypted_packets)
+        where list_of_decrypted_packets contains tuples of (header, decrypted_payload, packet_number)
     """
     global QUIC_EXPECTED_PACKET_NUMBER
     
@@ -219,19 +221,10 @@ def decrypt_quic_packet(packet, keylog_path="./client_secrets.log"):
         
         # Extract the packet payload using scapy
         scapy_packet = IP(packet.get_payload())        
-        
-        if UDP not in scapy_packet:
-            print("[!] Not a UDP packet")
-            return False, None, None, None
             
         udp = scapy_packet[UDP]
         udp_payload = bytes(udp.payload)
         # Make sure we have a QUIC packet
-
-        # Skip empty packets
-        if not udp_payload or len(udp_payload) < 4:  # Minimum QUIC header size
-            print("[!] Empty or too small UDP payload")
-            return False, None, None, None
             
         print(f"\n[*] Analyzing packet from {scapy_packet.src}:{udp.sport} to {scapy_packet.dst}:{udp.dport}")
         print(f"[*] UDP payload length: {len(udp_payload)} bytes")
@@ -239,11 +232,11 @@ def decrypt_quic_packet(packet, keylog_path="./client_secrets.log"):
         # Check if keylog file exists and readable
         if not os.path.exists(keylog_path):
             print(f"[!] Keylog file '{keylog_path}' does not exist")
-            return False, None, None, None
+            return False, []
         
         if not os.path.getsize(keylog_path):
             print(f"[!] Keylog file '{keylog_path}' is empty")
-            return False, None, None, None
+            return False, []
         
         # Load all supported secret types from keylog file
         secrets = {
@@ -262,7 +255,7 @@ def decrypt_quic_packet(packet, keylog_path="./client_secrets.log"):
                 content = f.read()
                 if len(content) < 10:  # Arbitrary small number
                     print(f"[!] Keylog file has too little content: '{content}'")
-                    return False, None, None, None
+                    return False, []
                     
                 lines = content.splitlines()
                 print(f"[*] Keylog file has {len(lines)} lines")
@@ -280,26 +273,26 @@ def decrypt_quic_packet(packet, keylog_path="./client_secrets.log"):
         except Exception as e:
             print(f"[!] Keylog file error: {str(e)}")
             traceback.print_exc()
-            return False, None, None, None
+            return False, []
         
         # Check if we have any secrets
         if not any(secrets.values()):
             print(f"[!] No valid secrets found in keylog. Found lines: {found_secret_lines}")
-            return False, None, None, None
+            return False, []
             
         print(f"[*] Successfully loaded {len(found_secret_lines)} secret entries")
         
         # Define cipher suites to try
         cipher_suites_to_try = [
-            
             (CipherSuite.AES_256_GCM_SHA384, "AES_256_GCM_SHA384")
         ]
         
         # Prepare to scan through multiple QUIC packets in the datagram
         buf = Buffer(data=udp_payload)
         success = False
+        parsed_quic_packets = []
         
-        # Process all packets in the datagram until we find one we can decrypt
+        # Process all packets in the datagram
         while not buf.eof():
             
             start_off = buf.tell()
@@ -308,34 +301,35 @@ def decrypt_quic_packet(packet, keylog_path="./client_secrets.log"):
                 # Try to parse the QUIC header
                 header = pull_quic_header(buf, host_cid_length=20)
                 QUIC_EXPECTED_PACKET_NUMBER += 1
-                print(f"[*] QUIC packet type: {header.packet_type}")
+                print(f"[*] Header: {header}")
                 print(f"[*] Version: {header.version}")
                 print(f"[*] DCID: {header.destination_cid.hex()}")
+                
+                print(f"[*] Packet length: {header.packet_length}")
+                print(f"[*] Packet type: {header.packet_type}")
                 if header.source_cid:
                     print(f"[*] SCID: {header.source_cid.hex()}")
-                print(f"[*] Packet length: {header.packet_length}")
                 
                 # Get the encrypted payload offset
                 encrypted_offset = buf.tell() - start_off
+                
+                # For short header packets (1-RTT), adjust the encrypted offset calculation
+                # if header.packet_type == QuicPacketType.ONE_RTT:
+                #     # Manually calculate the correct offset
                 
                 end_offset = start_off + header.packet_length
                 
                 print(f"[*] Encrypted payload starts at offset: {encrypted_offset}")
                 print(f"[*] Packet data from {start_off} to {end_offset}")
                 
-                # Skip empty or too small payloads
-                # if end_offset - start_off <= encrypted_offset + 16:  # Header + min AEAD tag
-                #     print("[!] Payload too small for decryption")
-                #     buf.seek(end_offset)
-                #     continue
-                
                 # Select appropriate secrets based on packet type
                 packet_secrets = []
                 
-                if QUIC_EXPECTED_PACKET_NUMBER == 1:
-                    print("[*] This is the first packet, not encrypted yet")
+                if header.packet_type == QuicPacketType.INITIAL:
+                    print("[*] Initial packets are not encrypted")
                     buf.seek(end_offset)
                     continue
+        
                 elif header.packet_type == QuicPacketType.HANDSHAKE:
                     print("[*] Using HANDSHAKE secrets")
                     if secrets["CLIENT_HANDSHAKE_TRAFFIC_SECRET"]:
@@ -355,7 +349,6 @@ def decrypt_quic_packet(packet, keylog_path="./client_secrets.log"):
                     if secrets["SERVER_TRAFFIC_SECRET_0"]:
                         packet_secrets.append(("server_1rtt", secrets["SERVER_TRAFFIC_SECRET_0"]))
                 
-                
                 # If we don't have appropriate secrets for this packet type, skip it
                 if not packet_secrets:
                     print(f"[!] No appropriate secrets for {header.packet_type} packet")
@@ -365,15 +358,15 @@ def decrypt_quic_packet(packet, keylog_path="./client_secrets.log"):
                 
                 # Try different packet numbers for robustness
                 packet_data = udp_payload[start_off:end_offset]
+                packet_decrypted = False
                 
-                # Try all three cipher suites for maximum compatibility
+                # Try all cipher suites for maximum compatibility
                 for cipher_suite, cipher_name in cipher_suites_to_try:
-                    if success:
+                    if packet_decrypted:
                         break
                         
-                        
                     for secret_type, secret in packet_secrets:
-                        if success:
+                        if packet_decrypted:
                             break
                             
                         try:
@@ -384,6 +377,8 @@ def decrypt_quic_packet(packet, keylog_path="./client_secrets.log"):
                                 secret=secret,
                                 version=QuicProtocolVersion.VERSION_2
                             )
+                            if header.packet_type == QuicPacketType.ONE_RTT:
+                                encrypted_offset = 9
                             print("[*] Crypto context set successfully")
                             # Try to decrypt
                             plain_header, decrypted_payload, packet_number, key_update = crypto.decrypt_packet(
@@ -402,33 +397,23 @@ def decrypt_quic_packet(packet, keylog_path="./client_secrets.log"):
                                 print(f"[*] First few bytes: {decrypted_payload[:min(16, len(decrypted_payload))].hex()}")
                             print(f"[*] Packet number vs expected: {packet_number} vs {QUIC_EXPECTED_PACKET_NUMBER}")
                             print(f"[*] Key update: {key_update}")
-                            # We found a packet we could decrypt
+                            
+                            # Add this decrypted packet to our collection
+                            parsed_quic_packets.append((header, decrypted_payload, packet_number))
+                            packet_decrypted = True
                             success = True
-                            buf.seek(end_offset)  
-                            return True, header, decrypted_payload, packet_number
                             
                         except Exception as e:
-                            # Only print every 10th error to reduce noise
-                            # if pn_offset % 10 == 0:
                             print(f"[-] Decryption attempt with {secret_type} using {cipher_name} failed for : {str(e)}")
                             traceback.print_exc()
-                            
                             continue
                 
-                # We couldn't decrypt this packet, move to the next one
+                # Move to the next packet in the datagram
                 buf.seek(end_offset)
                 
             except ValueError as e:
                 print(f"[!] Error parsing QUIC header: {str(e)}")
-                # Try to skip this packet and move to the next one - more cautious approach
-                try:
-                    # If we can find any valid length field, use it to skip ahead
-                    if buf.tell() + 4 <= len(udp_payload):
-                        buf.seek(buf.tell() + 4)  # Skip ahead by 4 bytes minimum
-                    else:
-                        buf.seek(len(udp_payload))  # End of buffer
-                except Exception:
-                    buf.seek(len(udp_payload))  # End of buffer
+                # End of buffer
             except Exception as e:
                 print(f"[!] Unexpected error processing packet: {str(e)}")
                 traceback.print_exc()
@@ -443,15 +428,17 @@ def decrypt_quic_packet(packet, keylog_path="./client_secrets.log"):
         
         if not success:
             print("[!] Could not decrypt any packet in the datagram")
-        
-        return False, None, None, None
+            return False, []
+            
+        print(f"[+] Successfully decrypted {len(parsed_quic_packets)} QUIC packets from datagram")
+        return True, parsed_quic_packets
         
     except Exception as e:
         print(f"[!] Critical error in decrypt_quic_packet: {str(e)}")
         traceback.print_exc()
-        return False, None, None, None
+        return False, []
 
-def modify_quic_packet(packet, args, modifier_func=None):
+def spoof_ack_packet(packet, args, modifier_func=None):
     """
     Decrypt a QUIC packet, modify its contents, and re-encrypt it.
     
@@ -466,15 +453,16 @@ def modify_quic_packet(packet, args, modifier_func=None):
     """
     try:
         # First, try to decrypt the packet
-        success, plain_header, decrypted_payload, packet_number = decrypt_quic_packet(packet)
+        success, decrypted_packets = decrypt_quic_packet(packet, keylog_path="./client_secrets.log")
         
-        if not success or not decrypted_payload:
+        if not success:
             print("[!] Failed to decrypt packet for modification")
             return packet
             
         # If we have a modifier function, use it to modify the payload
         if modifier_func:
-            modified_payload = modifier_func(decrypted_payload, plain_header, packet_number)
+            modified_payload = None
+            print("[*] Modifying payload is not implemented yet")
             if not modified_payload:
                 print("[!] Modifier function returned None or empty payload")
                 return packet
@@ -661,29 +649,17 @@ def ack_callback(packet, args=None):
         try:
             payload = IP(packet.get_payload())
             if UDP not in payload:
+                print("[!] Not a UDP packet")
                 packet.accept()
                 return
                 
             udp_payload = bytes(payload[UDP].payload)
-            if not udp_payload:
+            if not udp_payload or len(udp_payload) < 4:
+                print("[!] Empty UDP payload")
                 packet.accept()
                 return
                 
-            buf = Buffer(data=udp_payload)
-            header = pull_quic_header(buf, host_cid_length=20)
-            # Print the arguments given to the functio
-            
-            print(f"[*] Header: {header}")
-            print(f"[*] Packet: {packet}")
-            print(f"[*] Version: {header.version}")
-            print(f"[*] DCID: {header.destination_cid.hex()}")
-            print(f"[*] SCID: {header.source_cid.hex()}")
-            print(f"[*] Packet length: {header.packet_length}")
-            # Only modify 1-RTT packets, which are most likely to contain ACK frames
-            # if header.packet_type == QuicPacketType.ONE_RTT:
-            #     print(f"[+] Found 1-RTT packet that might contain ACK frames")
-                
-            modified_packet = modify_quic_packet(packet, args, modify_ack_frames)
+            modified_packet = spoof_ack_packet(packet, args, modify_ack_frames)
                 # modified_packet.accept()
                 # return
         except Exception as e:
@@ -737,7 +713,7 @@ def configure_ack_client(args):
     shutil.copy2("../../app/shared/shared_secrets.log", "./client_secrets.log")
     init_dcid = os.urandom(cid_len)
     init_scid = os.urandom(cid_len)
-    ticket_path = "../../app/shared/session_ticket"
+    ticket_path = "../../app/shared/session_ticket.pickle"
     ticket = None
     if os.path.exists(ticket_path):
         with open(ticket_path, "rb") as f:
