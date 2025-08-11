@@ -7,6 +7,8 @@ startContainers:
 stopContainers:
 	@echo "Stopping all containers..."
 	docker stop $$(docker ps -q)
+	rm -r ssl_cert.pem
+	rm -r ssl_key.pem
 
 restartContainers:
 	@echo "Restarting all containers..."
@@ -27,4 +29,14 @@ execQuicforge:
 containersStatus:
 	@echo "Checking status of all containers..."
 	docker ps -a
-.PHONY: startContainers stopContainers restartContainers execAioquic execClient execQuicforge containersStatus
+
+copyAttackerLog:
+	@echo "Copying attacker log from aioquic container..."
+	rm -f ssl_attacker.log
+	docker cp quicforge-container:/opt/QUICforge/client_secrets.log ./ssl_attacker.log
+
+logAioquic:
+	@echo "Aioquic server log:"
+	docker logs -f aioquic-container
+
+.PHONY: startContainers stopContainers restartContainers execAioquic execClient execQuicforge containersStatus copyAttackerLog logAioquic
