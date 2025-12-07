@@ -191,7 +191,7 @@ This attack manipulates QUIC acknowledgment frames to create artificial packet l
 
 ```bash
 make execClient
-python3 minimal_http_client.py https://<server_ip>:4433/
+python3 minimal_http_client.py https://<server_ip>:<target_ip>/
 ```
 
 Replace `<server_ip>` with your server's IP address (e.g., `172.17.0.2`).
@@ -399,11 +399,10 @@ This research aims to improve understanding of HTTP/3 security vulnerabilities t
 
 ## 👥 Authors
 
-[Your Name/Team Information]
+Elad Imany and Orel Shalem
 
 ## 📄 License
-
-[Specify your license - MIT, GPL, Academic Use Only, etc.]
+?
 
 ## 🤝 Contributing
 
