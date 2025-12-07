@@ -1,36 +1,106 @@
-# HTTP 3.0 Final Project
+# HTTP/3 Security Research Project
 
-A comprehensive project investigating HTTP/3 security vulnerabilities and performance, built using Aioquic and QUICforge environments. This repository contains Dockerized setups for an Aioquic server, a custom client, and the QUICforge attack framework.
+A comprehensive security research project investigating HTTP/3 (QUIC protocol) vulnerabilities through practical attack implementations. This repository demonstrates various attack vectors against HTTP/3 connections using Dockerized environments with Aioquic and QUICforge frameworks.
 
-## Prerequisites
+## 🎯 About This Project
 
-- **Docker**: Essential for running the isolated environments (Server, Client, Attacker).
-- **Make**: Used for executing commands inside running containers and managing their state.
-- **Python3**: Required for local script execution and development.
-- **Wireshark**: (Optional) For analyzing the provided `.pcapng` capture files.
+This project explores critical security vulnerabilities in the HTTP/3 protocol (QUIC) through hands-on demonstrations of:
 
-## Installation / Setup
+- **Spoofed ACK Attacks**: Request forgery by manipulating QUIC acknowledgment frames to force unnecessary retransmissions
+- **0-RTT Replay Attacks**: Exploiting early data transmission in QUIC's zero round-trip time feature
+- **HTTP/3 Flood/Slowloris**: Denial of service demonstrations targeting HTTP/3 connections
 
-Follow these steps in order to set up the environment. You must build the images and run the containers once before you can use the Makefile to manage them.
+The project uses containerized environments to safely demonstrate these attacks in an isolated, controlled setting.
+
+## 📋 Technologies Used
+
+- **[Aioquic](https://github.com/aiortc/aioquic)**: Python implementation of QUIC (RFC 9000) and HTTP/3 (RFC 9114)
+- **QUICforge**: QUIC packet manipulation and forgery framework
+- **Docker**: Containerized isolation for server, client, and attacker environments
+- **Scapy**: Low-level packet crafting and manipulation
+- **Wireshark**: Network traffic analysis and visualization
+
+## 📁 Project Structure
+
+```
+.
+├── Aioquic Docker/              # HTTP/3 server environment
+├── Aioquic Client Docker/       # HTTP/3 client implementation
+├── QUICforge Docker/            # Attack framework container
+│   └── QUICforge/
+│       ├── request_forgery.py   # Main attack orchestration script
+│       ├── Spoofed_Ack_First_Phase.py
+│       ├── Spoofed_Ack_Second_Phase.py
+│       ├── Spoofed_Ack_Third_Phase.py
+│       └── Spoofed_Ack_Forth_Phase.py
+├── Curl Docker/                 # Alternative client using curl
+├── Attacks Keys/                # Generated TLS secrets and logs
+│   ├── ssl_0-RTT.log
+│   ├── ssl_Spoofed_ACK_Attack.log
+│   └── ...
+├── Qlog Attacks/                # QLOG files for attack analysis
+│   ├── client/                  # Client-side QLOG traces
+│   │   ├── ack_attack_client.qlog
+│   │   └── ...
+│   └── attacker/                # Attacker-side QLOG traces
+│       ├── ack_attack_forge.qlog
+│       └── ...
+├── Wireshark attacks/           # Captured attack traffic (PCAP)
+│   ├── 0-RTT-Connection.pcapng
+│   ├── HTTP3-Flood.pcapng
+│   ├── Spoofed_ACK_Attack.pcapng
+│   └── ...
+├── Makefile                     # Container management automation
+├── .gitignore                   # Git ignore rules
+└── README.md
+```
+
+## ⚡ Prerequisites
+
+Before starting, ensure you have the following installed:
+
+- **Docker** (v20.10+): For running isolated containerized environments
+- **Make**: For simplified container management and command execution
+- **Python 3.8+**: Required for local development and testing
+- **OpenSSL**: For generating SSL/TLS certificates
+- **Wireshark** (Optional): For analyzing captured attack traffic in `.pcapng` files
+
+### System Requirements
+
+- Linux-based OS (tested on Ubuntu 20.04+)
+- Minimum 4GB RAM
+- 10GB free disk space
+- Root/sudo access for network manipulation capabilities
+
+## 🚀 Installation & Setup
+
+Follow these steps to set up the complete environment:
 
 ### 1. Clone the Repository
 
 ```bash
-git clone [https://github.com/Eladi24/HTTP-3.0-Final-Project.git](https://github.com/Eladi24/HTTP-3.0-Final-Project.git)
-cd http-3.0-final-project
-````
-
-### 2\. Generate Certificates
-
-Generate the SSL certificates required for the server and attacker.
-
-```bash
-openssl req -x509 -nodes -newkey rsa:4096 -keyout <name>.key -out <name>.pem -days 365
+git clone https://github.com/Eladi24/HTTP-3.0-Final-Project.git
+cd HTTP-3.0-Final-Project
 ```
 
-### 3\. Build Docker Images
+### 2. Generate SSL/TLS Certificates
 
-Build the specific Docker images for the server, client, and attacker environments.
+Generate the required certificates for secure QUIC connections:
+
+```bash
+# Generate server certificate
+openssl req -x509 -nodes -newkey rsa:4096 \
+  -keyout ssl_key.pem \
+  -out ssl_cert.pem \
+  -days 365 \
+  -subj "/CN=localhost"
+```
+
+**Note**: The generated `ssl_cert.pem` and `ssl_key.pem` files should remain in the project root directory.
+
+### 3. Build Docker Images
+
+Build the Docker images for each component:
 
 **Build Aioquic Server:**
 
@@ -56,24 +126,23 @@ docker build -t client-docker .
 cd ..
 ```
 
-### 4\. Run Containers (Initialization)
+### 4. Initialize Containers
 
-Once the images are built, use `docker run` to create and start the containers. This step is required to initialize the environments.
+Create and start the containers for the first time:
 
-**Run Aioquic Server:**
+**Start Aioquic Server:**
 
 ```bash
 docker run -dit --name aioquic-container -p 4433:4433 aioquic-docker
 ```
 
-**Run Client:**
+**Start Client:**
 
 ```bash
 docker run -dit --name client-container -p 1234:4433 -v shared-data:/app/shared client-docker
 ```
 
-**Run QUICforge (Attacker):**
-*Note: This container requires admin privileges (`NET_ADMIN`) to perform network attacks.*
+**Start QUICforge (Attacker):**
 
 ```bash
 docker run --cap-add=NET_ADMIN \
@@ -87,120 +156,259 @@ docker run --cap-add=NET_ADMIN \
            quicforge
 ```
 
-## Usage
+**Important**: The attacker container requires `NET_ADMIN` and `NET_RAW` capabilities to perform network-level packet manipulation.
 
-After the containers have been created (via `docker run`), you can use the provided `Makefile` to execute commands inside them and manage their lifecycle (start/stop/restart).
+## 💻 Usage
 
-### Accessing Components (Executing)
+After initial setup, use the Makefile commands to manage and interact with the containers.
 
-Use these commands to open an interactive shell inside the running containers:
+### Accessing Container Shells
 
-  - **Access Aioquic Server:**
+Open interactive shells inside running containers:
 
-    ```bash
-    make execAioquic
-    ```
+- **Access Aioquic Server:**
+  ```bash
+  make execAioquic
+  ```
 
-  - **Access Client:**
+- **Access Client:**
+  ```bash
+  make execClient
+  ```
 
-    ```bash
-    make execClient
-    ```
+- **Access QUICforge (Attacker):**
+  ```bash
+  make execQuicforge
+  ```
 
-  - **Access QUICforge (Attacker):**
+### 🎯 Executing Attacks
 
-    ```bash
-    make execQuicforge
-    ```
+#### Spoofed ACK Attack
 
-### Running Attacks
+This attack manipulates QUIC acknowledgment frames to create artificial packet loss, forcing the server to waste resources on unnecessary retransmissions.
 
-To initiate an attack, follow this sequence:
+**Step 1: Start the Client Connection**
 
-1.  **Start Client Session:**
-    Access the client container and attempt to connect to the server.
+```bash
+make execClient
+python3 minimal_http_client.py https://<server_ip>:4433/
+```
 
-    ```bash
-    make execClient
-    python3 minimal_http_client.py https://<server_ip>:<server_port>/
-    ```
+Replace `<server_ip>` with your server's IP address (e.g., `172.17.0.2`).
 
-    *(Replace `<server_ip>` and `<server_port>` with the actual IP and port, e.g., `172.18.0.2:4433`)*.
+**Step 2: Launch the Attack**
 
-    Once the command runs, type `exit` to leave the client container.
+In a separate terminal:
 
-2.  **Launch Attack:**
-    Access the attacker container and run the forgery script.
+```bash
+make execQuicforge
+cd QUICforge
+python3 request_forgery.py ack <victim_ip> <target_ip> \
+  --victim_port 4433 \
+  --target_port <target_port>
+```
 
-    ```bash
-    make execQuicforge
-    cd QUICForge
-    python3 request_forgery.py ack <victim_ip> <target_ip> --victim_port <victim_port> --target_port <target_port>
-    ```
+**Example:**
 
-    *(Replace placeholders with specific IPs and ports)*
+```bash
+python3 request_forgery.py ack 172.17.0.2 172.17.0.3 \
+  --victim_port 4433 \
+  --target_port 4433
+```
 
-    **Example:**
+**What Happens:**
+- The attack intercepts ACK frames from the client
+- Modifies them to report fake packet losses (gaps of 500, 1500, 2500 packets)
+- Server responds by retransmitting "lost" packets and sending PING probes
+- Results in ~4x increase in network traffic and wasted server resources
 
-    ```bash
-    python3 request_forgery.py ack 172.17.0.2 123.123.123.123 --victim_port 4433 --target_port 12345
-    ```
+#### 0-RTT Replay Attack
 
-### Managing Containers
+Exploits QUIC's 0-RTT feature by replaying early data:
 
-Use these make commands to manage the lifecycle of the containers you created in the "Setup" phase:
+```bash
+python3 request_forgery.py 0-rtt <victim_ip> <target_ip>
+```
 
-  - **Start Environments:** (Resumes stopped containers)
+#### HTTP/3 Flood Attack
 
-    ```bash
-    make startContainers
-    ```
+Generates high-volume legitimate requests to overwhelm the server:
 
-  - **Stop Environments:** (Stops running containers and cleans up keys)
+```bash
+python3 request_forgery.py flood <victim_ip> --dos <number_of_clients>
+```
 
-    ```bash
-    make stopContainers
-    ```
+### 🔧 Container Management
 
-  - **Restart Environments:**
+Use these Makefile commands to manage container lifecycle:
 
-    ```bash
-    make restartContainers
-    ```
+- **Start Containers:**
+  ```bash
+  make startContainers
+  ```
 
-  - **Check Status:**
+- **Stop Containers:**
+  ```bash
+  make stopContainers
+  ```
 
-    ```bash
-    make containersStatus
-    ```
+- **Restart Containers:**
+  ```bash
+  make restartContainers
+  ```
 
-### Logging
+- **Check Container Status:**
+  ```bash
+  make containersStatus
+  ```
 
-  - **View Server Logs:**
-    Displays the live logs from the Aioquic server.
+### 📊 Monitoring & Logging
 
-    ```bash
-    make logAioquic
-    ```
+- **View Server Logs (Live):**
+  ```bash
+  make logAioquic
+  ```
 
-  - **Extract Attacker Secrets:**
-    Copies the `client_secrets.log` from the attacker container to your local machine as `ssl_attacker.log`.
+- **Extract TLS Secrets from Attacker:**
+  ```bash
+  make copyAttackerLog
+  ```
+  This copies `client_secrets.log` to your local directory as `ssl_attacker.log`.
 
-    ```bash
-    make copyAttackerLog
-    ```
+## 🔬 Analyzing Attack Traffic
 
-## Project Structure
+### Using Wireshark
 
-  - **Aioquic Docker/**: Server implementation based on Aioquic.
-  - **Aioquic Client Docker/**: Client implementation and minimal HTTP client scripts.
-  - **QUICforge Docker/**: Containerized QUICforge attack tool.
-      - **`request_forgery.py`**: The primary attack script.
-      - **Attack Development Phases**: This folder also contains the evolutionary steps of the Spoofed ACK attack script:
-          - `Spoofed_Ack_First_Phase.py`
-          - `Spoofed_Ack_Second_Phase.py`
-          - `Spoofed_Ack_Third_Phase.py`
-          - `Spoofed_Ack_Forth_Phase.py`
-  - **Curl Docker/**: Implementation using Curl for HTTP/3 interactions.
-  - **Attacks Keys/**: Logs and keys generated during specific attack scenarios (e.g., `ssl_0-RTT.log`, `ssl_Spoofed_ACK_Attack.log`).
-  - **Wireshark attacks/**: PCAP files of attack traffic (e.g., `0-RTT-Connection.pcapng`, `HTTP3-Flood.pcapng`).
+The `Wireshark attacks/` directory contains pre-captured PCAP files demonstrating each attack type.
+
+**To analyze:**
+
+```bash
+wireshark "Wireshark attacks/Spoofed_ACK_Attack.pcapng"
+```
+
+**Configure Wireshark for QUIC Decryption:**
+
+1. Go to **Edit > Preferences > Protocols > TLS**
+2. Set **(Pre)-Master-Secret log filename** to point to your `client_secrets.log`
+3. Enable **Reassemble TLS records spanning multiple TCP segments**
+
+**Key Fields to Examine:**
+
+- QUIC packet numbers and ACK frames
+- Retransmission indicators
+- Connection IDs and migration events
+- CRYPTO frame contents
+
+### Understanding Attack Success Indicators
+
+**For Spoofed ACK Attack:**
+- Look for "Loss detection triggered" in server logs
+- Multiple "Sending PING (probe)" messages
+- "Scheduled CRYPTO data for retransmission" entries
+- Increased packet count (~4x normal traffic)
+- Server-initiated connection termination
+
+## 🛠️ Troubleshooting
+
+### Container Won't Start
+
+**Problem**: Port already in use
+```bash
+# Check if ports are occupied
+sudo netstat -tulpn | grep -E '4433|1234'
+
+# Kill processes using those ports if needed
+sudo kill -9 <PID>
+```
+
+### Permission Denied Errors
+
+**Problem**: Insufficient privileges for QUICforge
+```bash
+# Ensure the container has required capabilities
+docker inspect quicforge-container | grep -A 10 CapAdd
+```
+
+**Solution**: Rebuild the container with proper capabilities (see Step 4 above).
+
+### Certificate Errors
+
+**Problem**: Expired or missing certificates
+```bash
+# Check certificate validity
+openssl x509 -in ssl_cert.pem -text -noout | grep "Not After"
+
+# Regenerate if expired
+openssl req -x509 -nodes -newkey rsa:4096 \
+  -keyout ssl_key.pem \
+  -out ssl_cert.pem \
+  -days 365 \
+  -subj "/CN=localhost"
+```
+
+### Packet Decryption Failed
+
+**Problem**: Wireshark shows "Payload decryption failed"
+
+**Solution**:
+1. Ensure TLS secrets log file path is correctly set in Wireshark
+2. Verify the log file contains the correct session secrets
+3. Capture traffic from the beginning of the connection (including Initial packets)
+
+### Attack Not Working
+
+**Problem**: Server doesn't show retransmission behavior
+
+**Checklist**:
+- Verify iptables rules are correctly inserted
+- Check that TLS secrets are being extracted
+- Ensure packet modification is occurring (check debug output)
+- Verify connection uses QUIC v2 (not v1)
+
+## 📚 Attack Development Phases
+
+The `QUICforge Docker/QUICforge/` directory contains the evolutionary development of the Spoofed ACK attack:
+
+1. **`Spoofed_Ack_First_Phase.py`**: Basic packet interception and decryption
+2. **`Spoofed_Ack_Second_Phase.py`**: ACK frame parsing and modification
+3. **`Spoofed_Ack_Third_Phase.py`**: Re-encryption with authentication handling
+4. **`Spoofed_Ack_Forth_Phase.py`**: Final optimized version with multiple fallback strategies
+5. **`request_forgery.py`**: Complete attack orchestration with all attack types
+
+These phases demonstrate the iterative process of developing a working QUIC packet manipulation attack against authenticated encryption.
+
+## ⚠️ Legal Disclaimer
+
+**This project is intended exclusively for educational and research purposes.**
+
+- Only use these tools in **controlled laboratory environments**
+- You must have **explicit permission** to test these attacks on any system
+- Unauthorized use against systems you don't own is **illegal** and unethical
+- The authors assume **no responsibility** for misuse of this code
+
+This research aims to improve understanding of HTTP/3 security vulnerabilities to help develop better defenses.
+
+## 🔗 References & Resources
+
+- [RFC 9000 - QUIC: A UDP-Based Multiplexed and Secure Transport](https://www.rfc-editor.org/rfc/rfc9000.html)
+- [RFC 9114 - HTTP/3](https://www.rfc-editor.org/rfc/rfc9114.html)
+- [RFC 9001 - Using TLS to Secure QUIC](https://www.rfc-editor.org/rfc/rfc9001.html)
+- [Aioquic Documentation](https://github.com/aiortc/aioquic)
+- [QUIC Working Group](https://quicwg.org/)
+
+## 👥 Authors
+
+[Your Name/Team Information]
+
+## 📄 License
+
+[Specify your license - MIT, GPL, Academic Use Only, etc.]
+
+## 🤝 Contributing
+
+Contributions to improve attack techniques, add new vulnerabilities, or enhance documentation are welcome. Please open an issue or submit a pull request.
+
+---
+
+**For questions or issues, please open a GitHub issue or contact the maintainers.**

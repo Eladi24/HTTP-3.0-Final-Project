@@ -1,0 +1,6 @@
+# Ignore the aioquic directory
+aioquic/
+commands.txt
+Docker Commands.txt
+# Ignore pem files
+*.pem
