@@ -7,8 +7,8 @@ A comprehensive security research project investigating HTTP/3 (QUIC protocol) v
 This project explores critical security vulnerabilities in the HTTP/3 protocol (QUIC) through hands-on demonstrations of:
 
 - **Spoofed ACK Attacks**: Request forgery by manipulating QUIC acknowledgment frames to force unnecessary retransmissions
-- **0-RTT Replay Attacks**: Exploiting early data transmission in QUIC's zero round-trip time feature
-- **HTTP/3 Flood/Slowloris**: Denial of service demonstrations targeting HTTP/3 connections
+- **0-RTT Replay Attacks**: Exploiting early data transmission in QUIC's zero round-trip time feature ($$)
+- **HTTP/3 Flood/Slowloris**: Denial of service demonstrations targeting HTTP/3 connections ($$)
 
 The project uses containerized environments to safely demonstrate these attacks in an isolated, controlled setting.
 
@@ -221,22 +221,6 @@ python3 request_forgery.py ack 172.17.0.2 172.17.0.3 \
 - Modifies them to report fake packet losses (gaps of 500, 1500, 2500 packets)
 - Server responds by retransmitting "lost" packets and sending PING probes
 - Results in ~4x increase in network traffic and wasted server resources
-
-#### 0-RTT Replay Attack
-
-Exploits QUIC's 0-RTT feature by replaying early data:
-
-```bash
-python3 request_forgery.py 0-rtt <victim_ip> <target_ip>
-```
-
-#### HTTP/3 Flood Attack
-
-Generates high-volume legitimate requests to overwhelm the server:
-
-```bash
-python3 request_forgery.py flood <victim_ip> --dos <number_of_clients>
-```
 
 ### 🔧 Container Management
 
